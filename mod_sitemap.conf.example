@@ -1,0 +1,34 @@
+LoadModule sitemap_module modules/mod_sitemap.so
+
+SitemapEngine On
+SitemapEndpoint /sitemap.xml
+SitemapBaseURL https://www.example.com
+SitemapStateDirectory /var/lib/mod_sitemap
+
+SitemapFile /index.html /var/www/html/index.html
+SitemapDirectory /docs/ /var/www/html/docs
+SitemapLocation /reports
+
+# One scripted URL whose lastmod is the newest of these paths or a runtime
+# notification. Paths may name regular files or directories.
+SitemapComposite /application /srv/application/app.py /srv/application/templates /etc/application/settings.json
+SitemapLastModified /application 2026-10-14T22:00:00Z
+SitemapChangeFrequency /application daily
+SitemapPriority /application 0.8
+
+# Date-only values are also valid:
+SitemapLastModified /docs/ 2026-10-14
+
+# Context form for a scripted URL:
+<Location /account>
+    SitemapComposite /account /srv/application/account.py /srv/application/account-templates
+    SitemapChangeFrequency /account weekly
+    SitemapPriority /account 0.6
+</Location>
+
+# Context form for a real directory. The public URI remains explicit.
+<Directory /var/www/html/downloads>
+    SitemapComposite /downloads/ /var/www/html/downloads /etc/downloads-public.json
+    SitemapChangeFrequency /downloads/ monthly
+    SitemapPriority /downloads/ 0.4
+</Directory>
